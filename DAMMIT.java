@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2013 Tim Fleck
+ *
+ * This program is licensed under the MIT License
+ * Please see the LICENSE file for complete license details
+ */
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 

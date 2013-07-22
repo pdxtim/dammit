@@ -25,3 +25,5 @@ Relay Module:
 Numato Lab 2 Channel USB Powered Relay Module  
 Ver: 1.02  
 Batch: NLAA02  
+
+This fork is for testing new Serial IO method for USB connection.

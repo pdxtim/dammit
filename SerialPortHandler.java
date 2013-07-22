@@ -4,9 +4,12 @@
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.lang.Exception;
 import java.util.Enumeration;
+import java.util.TooManyListenersException;
 
 import gnu.io.CommPort;
 import gnu.io.CommPortIdentifier;
@@ -14,6 +17,8 @@ import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
 import gnu.io.*;
+
+import org.apache.commons.io.IOUtils;
 
 public class SerialPortHandler {
     private SerialPort serialPort;
@@ -37,9 +42,13 @@ public class SerialPortHandler {
             // open, close the port before throwing an exception.
             outStream = serialPort.getOutputStream();
             inStream = serialPort.getInputStream();
+	    serialPort.addEventListener(new SerialReader(inStream));
+	    serialPort.notifyOnDataAvailable(true);
         } catch (NoSuchPortException e) {
             throw new IOException(e.getMessage());
         } catch (PortInUseException e) {
+            throw new IOException(e.getMessage());
+        } catch (TooManyListenersException e) {
             throw new IOException(e.getMessage());
         } catch (IOException e) {
 	    System.out.println("Exception - Closing port ");
@@ -52,8 +61,9 @@ public class SerialPortHandler {
      * Get the serial port input stream
      * @return The serial port input stream
      */
-    public InputStream getSerialInputStream() {
-        return inStream;
+    //public InputStream getSerialInputStream() {
+    public InputStream getSerialInputStream() throws IOException {
+ 	return inStream;
     }
  
     /**
@@ -61,7 +71,9 @@ public class SerialPortHandler {
      * @return The serial port output stream
      */
     public OutputStream getSerialOutputStream() {
-        return outStream;
+    //public String getSerialOutputStream() {
+        //convertStreamToStringOut(outStream);
+	return outStream;
     }
  
     /**
@@ -94,6 +106,74 @@ public class SerialPortHandler {
             throw e;
         }
     }
+/*
+    public String readSerial() throws IOException {
+        //BufferedReader reader = new BufferedReader(new InputStreamReader(inStream));
+	try{
+	    int data;
+	    byte[] buffer = new byte[1024];
+	    int len = 0;
+	    String msg = "";
+ 	    //String msg = inStream.read(buffer);
+
+                len = -1;
+                while ( ( len = inStream.read(buffer)) > -1 )
+               //while ((msg = reader.readLine()) != null) 
+                {
+                    //if ( data == '\n' ) {
+                    //    break;
+                    //}
+            	   //System.out.println("Line with " + msg.length() + " characters: \"" + msg + "\"");
+                    //buffer[len++] = (byte) data;
+               // }
+              System.out.print(new String(buffer,0,len));
+	        }
+	    return msg;
+        } catch (IOException e) {
+	    System.out.println("Exception - Closing port ");
+            serialPort.close();
+            throw e
+        }
+    }*/
+
+    /**
+     * Handles the input coming from the serial port. A new line character
+     * is treated as the end of a block in this example. 
+     */
+    public static class SerialReader implements SerialPortEventListener 
+    {
+        private InputStream inStream;
+        private byte[] buffer = new byte[1024];
+        
+        public SerialReader ( InputStream inStream )
+        {
+            this.inStream = inStream;
+        }
+        
+        public void serialEvent(SerialPortEvent arg0) {
+            int data;
+          
+            try
+            {
+                int len = 0;
+                while ( ( data = inStream.read()) > -1 )
+                {
+                    if ( data == '\n' ) {
+                        break;
+                    }
+                    buffer[len++] = (byte) data;
+                }
+                System.out.print(new String(buffer,0,len));
+            }
+            catch ( IOException e )
+            {
+                e.printStackTrace();
+                //System.exit(-1);
+            }             
+        }
+
+    }
+
 
     public void disconnect() throws IOException {
         try {
@@ -106,4 +186,17 @@ public class SerialPortHandler {
             throw e;
         }
     }
+
+    public static String convertStreamToStringIn(java.io.InputStream is) {
+        java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
+	System.out.println("Made it here!!");
+        return s.hasNext() ? s.next() : "";
+    }
+
+    //public static String convertStreamToStringOut(java.io.OutputStream is) {
+    //    java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
+    //    return s.hasNext() ? s.next() : "";
+    //}
 }
+
+

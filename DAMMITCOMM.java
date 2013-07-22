@@ -64,33 +64,52 @@ public class DAMMITCOMM {
 	
     }
 
-	public void toggleRelay1 (boolean relay1on) {
-		System.out.println(relay1on);
+	public void toggleRelay0on (boolean relay0on) {
+		System.out.println(relay0on);
 		//sph.connect(port);                
-		if (relay1on) {
-		    try{
-		    //sph.connect(port);        
-		    System.out.println("Relay 1 turning off? ");
-		    DAMMIT.sph.writeSerial("relay off 1\n\r");
-		    //dammit.relay1on = false;
-		    } catch (IOException e) {
-		        System.out.println("Relay 1 operation failed: ");
-		        System.out.println(e.getMessage());
-		    }
-		}
-		else 
-		{
-		    try{
-		    //sph.connect(port);        
-		    System.out.println("Relay 1 turning on? ");
-		    DAMMIT.sph.writeSerial("relay on 1\n\r");
-		    //dammit.relay1on = true;
-		    } catch (IOException e) {
-		        System.out.println("Relay 1 operation failed: ");
-		        System.out.println(e.getMessage());
-		    }
+		try{
+		//sph.connect(port);        
+		System.out.println("Relay 0 turning on? ");
+		DAMMIT.sph.writeSerial("relay on 1\n\r");
+		//dammit.relay1on = true;
+		} catch (IOException e) {
+		    System.out.println("Relay 0 operation failed: ");
+		    System.out.println(e.getMessage());
 		}
 	}
 
+	public void toggleRelay0off (boolean relay0on) {
+		System.out.println(relay0on);
+		try{
+		//sph.connect(port);        
+		System.out.println("Relay 0 turning off? ");
+		DAMMIT.sph.writeSerial("relay off 1\n\r");
+		//dammit.relay1on = false;
+		} catch (IOException e) {
+		    System.out.println("Relay 0 operation failed: ");
+		    System.out.println(e.getMessage());
+		}
+	}
+
+	public void adc0read () {
+		//System.out.println(relay0on);
+		String input;
+		try{
+		//sph.connect(port);        
+		System.out.println("Reading adc0 ");
+		Thread.sleep(1);
+		DAMMIT.sph.writeSerial("adc read 0\n\r");
+		//System.out.println("Sent read request! ");
+		//input = DAMMIT.sph.readSerial();
+		//System.out.println(input);
+		//dammit.relay1on = false;
+		} catch (IOException e) {
+		    System.out.println("Relay 0 operation failed: ");
+		    System.out.println(e.getMessage());
+		} catch (InterruptedException e) {
+		    System.out.println("Relay 0 operation failed: ");
+		    System.out.println(e.getMessage());
+		}
+	}
 }
 

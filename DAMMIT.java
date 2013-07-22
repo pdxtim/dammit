@@ -36,8 +36,16 @@ public class DAMMIT {
     public static DAMMITCOMM DC;
     public static DAMMITWindow dammitWin;
 
-    public static void relay1Toggle(boolean relay1on){
-	DC.toggleRelay1(relay1on);
+    public static void relay0ToggleOn(boolean relay0on){
+	DC.toggleRelay0on(relay0on);
+    }
+
+    public static void relay0ToggleOff(boolean relay0on){
+	DC.toggleRelay0off(relay0on);
+    }
+
+    public static void readFromAdc0(){
+	DC.adc0read ();
     }
  
     public static void main(String[] args) throws InterruptedException {
@@ -51,8 +59,22 @@ public class DAMMIT {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
+		
+
+		//if (cnt == 30) cnt = 0;
                 dammitWin = new DAMMITWindow();
                 dammitWin.setVisible(true);
+		/** while(!dammitWin.quitFlag)
+		//{
+		    try{
+		        Thread.sleep(100);
+			cnt++;
+		        if (x == 30) DC.adc0read();
+		    } catch (InterruptedException e) {
+		        System.out.println("Port operations failed: ");
+		        System.out.println(e.getMessage());
+		    }
+		}*/
             }
         });
 

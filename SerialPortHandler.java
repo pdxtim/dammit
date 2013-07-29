@@ -24,6 +24,8 @@ public class SerialPortHandler {
     private SerialPort serialPort;
     private OutputStream outStream;
     private InputStream inStream;
+    private boolean inputWaiting;
+    private int inputData;
  
     public void connect(String portName) throws IOException {
         try {
@@ -140,7 +142,7 @@ public class SerialPortHandler {
      * Handles the input coming from the serial port. A new line character
      * is treated as the end of a block in this example. 
      */
-    public static class SerialReader implements SerialPortEventListener 
+    public class SerialReader implements SerialPortEventListener 
     {
         private InputStream inStream;
         private byte[] buffer = new byte[1024];
@@ -152,6 +154,7 @@ public class SerialPortHandler {
         
         public void serialEvent(SerialPortEvent arg0) {
             int data;
+	    //String theData;
           
             try
             {
@@ -161,9 +164,10 @@ public class SerialPortHandler {
                     if ( data == '\n' ) {
                         break;
                     }
-                    buffer[len++] = (byte) data;
+                    if (data >= 48 && data <= 57 ){buffer[len++] = (byte) data;}
                 }
-                System.out.print(new String(buffer,0,len));
+		inputData = Integer.parseInt(new String(buffer,0,len));
+		inputWaiting = true;
             }
             catch ( IOException e )
             {
@@ -172,6 +176,20 @@ public class SerialPortHandler {
             }             
         }
 
+    }
+
+
+    public boolean checkForData() {
+	return inputWaiting;
+    }
+
+    public int getData() {
+	if (inputWaiting) {
+	    inputWaiting = false;
+	    return inputData;
+	} else {
+	    return 0;
+	}
     }
 
 

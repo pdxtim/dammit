@@ -44,9 +44,10 @@ public class DAMMIT {
 	DC.toggleRelay0off(relay0on);
     }
 
-    public static void readFromAdc0(){
-	DC.adc0read ();
+    public static int readFromAdc(int channel){
+	return DC.adcRead (channel);
     }
+
  
     public static void main(String[] args) throws InterruptedException {
 	sph = new SerialPortHandler();

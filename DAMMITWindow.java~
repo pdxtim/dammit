@@ -10,8 +10,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.lang.Exception;
-
 import java.util.Enumeration;
+
+import java.text.DecimalFormat;
+import java.util.Locale;
+import java.awt.Font;
 
 import gnu.io.CommPort;
 import gnu.io.CommPortIdentifier;
@@ -126,23 +129,32 @@ public class DAMMITWindow extends JFrame {
 
 
        JLabel inLabel0 = new JLabel("Input 1");
-       inLabel0.setBounds(120, 400, 60, 30);
+       inLabel0.setBounds(100, 400, 100, 30);
+       inLabel0.setFont(new Font("Serif", Font.BOLD, 20));
        JLabel inLabel1 = new JLabel("Input 2");
-       inLabel1.setBounds(270, 400, 60, 30);
+       inLabel1.setBounds(250, 400, 100, 30);
+       inLabel1.setFont(new Font("Serif", Font.BOLD, 20));
        JLabel inLabel2 = new JLabel("Input 3");
-       inLabel2.setBounds(420, 400, 60, 30);
+       inLabel2.setBounds(400, 400, 100, 30);
+       inLabel2.setFont(new Font("Serif", Font.BOLD, 20));
        JLabel inLabel3 = new JLabel("Input 4");
-       inLabel3.setBounds(570, 400, 60, 30);
+       inLabel3.setBounds(550, 400, 100, 30);
+       inLabel3.setFont(new Font("Serif", Font.BOLD, 20));
 
-
-       final JLabel adcLabel0 = new JLabel(Double.toString(adc0/200.0) + " Volts");
-       adcLabel0.setBounds(110, 350, 100, 50);
-       final JLabel adcLabel1 = new JLabel(Double.toString(adc1/200.0) + " Volts");
-       adcLabel1.setBounds(260, 350, 100, 50);
-       final JLabel adcLabel2 = new JLabel(Double.toString(adc2/200.0) + " Volts");
-       adcLabel2.setBounds(410, 350, 100, 50);
-       final JLabel adcLabel3 = new JLabel(Double.toString(adc3/200.0) + " Volts");;
-       adcLabel3.setBounds(560, 350, 100, 50);
+       DecimalFormat volts = new DecimalFormat("#.00");
+       Locale.setDefault(Locale.US);
+       final JLabel adcLabel0 = new JLabel(volts.format(adc0/200.0) + " Volts");
+       adcLabel0.setBounds(80, 350, 120, 50);
+       adcLabel0.setFont(new Font("Serif", Font.BOLD, 18));
+       final JLabel adcLabel1 = new JLabel(volts.format(adc1/200.0) + " Volts");
+       adcLabel1.setBounds(230, 350, 120, 50);
+       adcLabel1.setFont(new Font("Serif", Font.BOLD, 18));
+       final JLabel adcLabel2 = new JLabel(volts.format(adc2/200.0) + " Volts");
+       adcLabel2.setBounds(380, 350, 120, 50);
+       adcLabel2.setFont(new Font("Serif", Font.BOLD, 18));
+       final JLabel adcLabel3 = new JLabel(volts.format(adc3/200.0) + " Volts");;
+       adcLabel3.setBounds(530, 350, 120, 50);
+       adcLabel3.setFont(new Font("Serif", Font.BOLD, 18));
 
 
        final JLabel adcLabelI0 = new JLabel(P00);
@@ -191,11 +203,15 @@ public class DAMMITWindow extends JFrame {
 		//adc1 = DAMMIT.readFromAdc (1);
 		//adc2 = DAMMIT.readFromAdc (2);
 		//adc3 = DAMMIT.readFromAdc (3);
-		adcLabel0.setText(Double.toString(adc0/200.0) + " Volts");
-		adcLabel1.setText(Double.toString(adc1/200.0) + " Volts");
-		adcLabel2.setText(Double.toString(adc2/200.0) + " Volts");
-		adcLabel3.setText(Double.toString(adc3/200.0) + " Volts");
-		if (adc0 > 20 && adc0 <= 75) adcLabelI0.setIcon(P05); 
+		DecimalFormat volts = new DecimalFormat("0.00");
+       		Locale.setDefault(Locale.US);
+		adcLabel0.setText(volts.format(adc0/200.0) + " Volts");
+		adcLabel1.setText(volts.format(adc1/200.0) + " Volts");
+		adcLabel2.setText(volts.format(adc2/200.0) + " Volts");
+		adcLabel3.setText(volts.format(adc3/200.0) + " Volts");
+		
+		if (adc0 <= 20) adcLabelI0.setIcon(P00); 
+		else if (adc0 > 20 && adc0 <= 75) adcLabelI0.setIcon(P05); 
 		else if (adc0 > 75 && adc0 <= 125) adcLabelI0.setIcon(P10);
 		else if (adc0 > 125 && adc0 <= 175) adcLabelI0.setIcon(P15);
 		else if (adc0 > 175 && adc0 <= 225) adcLabelI0.setIcon(P20);
@@ -216,7 +232,9 @@ public class DAMMITWindow extends JFrame {
 		else if (adc0 > 925 && adc0 <= 975) adcLabelI0.setIcon(P95);
 		else adcLabelI0.setIcon(P100);
 
-		if (adc1 > 20 && adc1 <= 75) adcLabelI1.setIcon(P05); 
+		
+		if (adc1 <= 20) adcLabelI1.setIcon(P00); 
+		else if (adc1 > 20 && adc1 <= 75) adcLabelI1.setIcon(P05); 
 		else if (adc1 > 75 && adc1 <= 125) adcLabelI1.setIcon(P10);
 		else if (adc1 > 125 && adc1 <= 175) adcLabelI1.setIcon(P15);
 		else if (adc1 > 175 && adc1 <= 225) adcLabelI1.setIcon(P20);
@@ -237,7 +255,8 @@ public class DAMMITWindow extends JFrame {
 		else if (adc1 > 925 && adc1 <= 975) adcLabelI1.setIcon(P95);
 		else adcLabelI1.setIcon(P100);
 
-		if (adc2 > 20 && adc2 <= 75) adcLabelI2.setIcon(P05); 
+		if (adc2 <= 20) adcLabelI2.setIcon(P00); 
+		else if (adc2 > 20 && adc2 <= 75) adcLabelI2.setIcon(P05); 
 		else if (adc2 > 75 && adc2 <= 125) adcLabelI2.setIcon(P10);
 		else if (adc2 > 125 && adc2 <= 175) adcLabelI2.setIcon(P15);
 		else if (adc2 > 175 && adc2 <= 225) adcLabelI2.setIcon(P20);
@@ -258,7 +277,8 @@ public class DAMMITWindow extends JFrame {
 		else if (adc2 > 925 && adc2 <= 975) adcLabelI2.setIcon(P95);
 		else adcLabelI2.setIcon(P100);
 
-		if (adc3 > 20 && adc1 <= 75) adcLabelI3.setIcon(P05); 
+		if (adc3 <= 20) adcLabelI3.setIcon(P00); 
+		else if (adc3 > 20 && adc3 <= 75) adcLabelI3.setIcon(P05); 
 		else if (adc3 > 75 && adc3 <= 125) adcLabelI3.setIcon(P10);
 		else if (adc3 > 125 && adc3 <= 175) adcLabelI3.setIcon(P15);
 		else if (adc3 > 175 && adc3 <= 225) adcLabelI3.setIcon(P20);
@@ -302,16 +322,18 @@ public class DAMMITWindow extends JFrame {
 	    public Integer doInBackground(){
 		while (!quitFlag){
 		    try{
-		        Thread.sleep(333);
+		        Thread.sleep(200);
 		    }catch (InterruptedException e) {
 		    System.out.println("Timer failed: ");
 		    System.out.println(e.getMessage());
 		}
-		    adc0 = DAMMIT.readFromAdc(0);
-		    adc1 = DAMMIT.readFromAdc(1);
-		    adc2 = DAMMIT.readFromAdc(2);
-		    adc3 = DAMMIT.readFromAdc(3);
-		    if (!stopFlag) readAdc.doClick();
+		    if (!stopFlag){
+			adc0 = DAMMIT.readFromAdc(0);
+			adc1 = DAMMIT.readFromAdc(1);
+			adc2 = DAMMIT.readFromAdc(2);
+			adc3 = DAMMIT.readFromAdc(3);
+			readAdc.doClick();
+		    }
 		}
 		return 0;
 	    }

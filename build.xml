@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!-- Copyright (c) 2013 Tim Fleck  -->
+<!--   -->
+<!-- This program is licensed under the MIT License  -->
+<!-- Please see the COPYING file for complete license details  -->
+<!--   -->
+
+<project name="dammitCompile" default="deploy" basedir=".">
+
+   <target name="init">
+      <property name="sourceDir" value="src"/>
+      <property name="outputDir" value="classes" />
+      <property name="distDir" value="dist"/>
+   </target>
+
+   <target name="clean" depends="init">
+      <deltree dir="${outputDir}" />
+   </target>
+
+   <target name="prepare" depends="clean"> 
+      <mkdir dir="${outputDir}" />
+   </target>
+
+   <target name="compile" depends="prepare">
+     <javac srcdir="${sourceDir}" destdir="${outputDir}" />
+   </target>
+
+  <!--Creates the deployable jar file  -->
+  <target name="jar" depends="compile">
+    <jar destfile="${distDir}\dammit.jar" basedir="${outputDir}">
+      <manifest>
+        <attribute name="Main-Class" value="DAMMIT"/>
+      </manifest>
+    </jar>
+  </target>
+
+</project> 
+  <!--1-503-705-2474  -->

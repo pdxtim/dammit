@@ -1,5 +1,12 @@
-// Still determining the copyright and License of this tutorial code.. Will update shortly
-//
+/*
+ * Copyright (c) 2013 Tim Fleck
+ *
+ * This program is licensed under the MIT License
+ * Please see the LICENSE file for complete license details
+ *
+ * This code is based on tutorial examples for RXTX found at
+ * rxtx.qbang.org/wiki/index.php/Using_RXTX 
+ */
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -108,35 +115,7 @@ public class SerialPortHandler {
             throw e;
         }
     }
-/*
-    public String readSerial() throws IOException {
-        //BufferedReader reader = new BufferedReader(new InputStreamReader(inStream));
-	try{
-	    int data;
-	    byte[] buffer = new byte[1024];
-	    int len = 0;
-	    String msg = "";
- 	    //String msg = inStream.read(buffer);
 
-                len = -1;
-                while ( ( len = inStream.read(buffer)) > -1 )
-               //while ((msg = reader.readLine()) != null) 
-                {
-                    //if ( data == '\n' ) {
-                    //    break;
-                    //}
-            	   //System.out.println("Line with " + msg.length() + " characters: \"" + msg + "\"");
-                    //buffer[len++] = (byte) data;
-               // }
-              System.out.print(new String(buffer,0,len));
-	        }
-	    return msg;
-        } catch (IOException e) {
-	    System.out.println("Exception - Closing port ");
-            serialPort.close();
-            throw e
-        }
-    }*/
 
     /**
      * Handles the input coming from the serial port. A new line character

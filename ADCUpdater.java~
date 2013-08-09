@@ -1,0 +1,76 @@
+/*
+ * Copyright (c) 2013 Tim Fleck
+ *
+ * This program is licensed under the MIT License
+ * Please see the LICENSE file for complete license details
+ */
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.lang.Exception;
+
+import java.util.Enumeration;
+
+import gnu.io.CommPort;
+import gnu.io.CommPortIdentifier;
+import gnu.io.SerialPort;
+import gnu.io.SerialPortEvent;
+import gnu.io.SerialPortEventListener;
+import gnu.io.*;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
+
+import gnu.io.*;
+
+public class ADCUpdater extends SwingWorker<void, void>{
+
+    //private int adc0;
+    //private int adc1;
+    //private int adc2;
+    //private int adc3;    
+
+    //public ADCUpdater(){
+    //}
+
+    @override
+    protected void doInBackground() throws Exception {
+	while (true){
+		Thread.sleep(500);
+		DAMMIT.dammitWin.adc0 = DAMMIT.readFromAdc(0);
+		DAMMIT.dammitWin.adc1 = DAMMIT.readFromAdc(1);
+		DAMMIT.dammitWin.adc2 = DAMMIT.readFromAdc(2);
+		DAMMIT.dammitWin.adc3 = DAMMIT.readFromAdc(3);
+		DAMMIT.dammitWin.readAdc.doClick();
+	}
+    }
+
+    public int getAdc0(){
+	return adc0;
+    }
+
+    public int getAdc1(){
+	return adc1;
+    }
+
+    public int getAdc2(){
+	return adc2;
+    }
+
+    public int getAdc3(){
+	return adc3;
+    }
+}
+
+
+
+
+

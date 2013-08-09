@@ -1,0 +1,382 @@
+/*
+ * Copyright (c) 2013 Tim Fleck
+ *
+ * This program is licensed under the MIT License
+ * Please see the COPYING file for complete license details
+ */
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.lang.Exception;
+import java.util.Enumeration;
+
+import java.text.DecimalFormat;
+import java.util.Locale;
+import java.awt.Font;
+
+import gnu.io.CommPort;
+import gnu.io.CommPortIdentifier;
+import gnu.io.SerialPort;
+import gnu.io.SerialPortEvent;
+import gnu.io.SerialPortEventListener;
+import gnu.io.*;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JLabel;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
+
+import gnu.io.*;
+
+
+public class DAMMITWindow extends JFrame {
+
+    public boolean relay0on;
+    public boolean relay1on;
+    public boolean quitFlag;
+    public boolean stopFlag;
+    public int adc0;
+    public int adc1;
+    public int adc2;
+    public int adc3;
+    public String adcS0;
+    public String adcS1;
+    public String adcS2;
+    public String adcS3;
+    public int cnt;
+
+    //public DAMMITCOMM DC;
+    //private SerialPortHandler sph;
+
+    public DAMMITWindow() {
+        //DC = dc;
+        initUI();
+	relay0on = false;
+	relay1on = false;
+	quitFlag = false;
+	stopFlag = false;
+	adc0 = 0;
+	adc1 = 0;
+	adc2 = 0;
+	adc3 = 0;
+	adcS0 = "0";
+	adcS1 = "0";
+	adcS2 = "0";
+	adcS3 = "0";
+	cnt = 0;
+    }
+
+    //public DAMMITWindow(SerialPortHandler Sph) {
+    //    
+	//sph = Sph;        
+	//initUI();
+	//relay0on = false;
+	//relay1on = false;
+    //}
+    private void initUI() {
+
+	final ImageIcon P00 = new ImageIcon("imgs/00P.jpg"); 
+	final ImageIcon P05 = new ImageIcon("imgs/05P.jpg");  
+	final ImageIcon P10 = new ImageIcon("imgs/10P.jpg"); 
+	final ImageIcon P15 = new ImageIcon("imgs/15P.jpg");
+	final ImageIcon P20 = new ImageIcon("imgs/20P.jpg");
+	final ImageIcon P25 = new ImageIcon("imgs/25P.jpg");
+	final ImageIcon P30 = new ImageIcon("imgs/30P.jpg");
+	final ImageIcon P35 = new ImageIcon("imgs/35P.jpg");
+	final ImageIcon P40 = new ImageIcon("imgs/40P.jpg");
+	final ImageIcon P45 = new ImageIcon("imgs/45P.jpg");
+	final ImageIcon P50 = new ImageIcon("imgs/50P.jpg");
+	final ImageIcon P55 = new ImageIcon("imgs/55P.jpg");
+	final ImageIcon P60 = new ImageIcon("imgs/60P.jpg");
+	final ImageIcon P65 = new ImageIcon("imgs/65P.jpg");
+	final ImageIcon P70 = new ImageIcon("imgs/70P.jpg");
+	final ImageIcon P75 = new ImageIcon("imgs/75P.jpg");
+	final ImageIcon P80 = new ImageIcon("imgs/80P.jpg");
+	final ImageIcon P85 = new ImageIcon("imgs/85P.jpg");
+	final ImageIcon P90 = new ImageIcon("imgs/90P.jpg");
+	final ImageIcon P95 = new ImageIcon("imgs/95P.jpg");
+	final ImageIcon P100 = new ImageIcon("imgs/100P.jpg");
+	
+	JPanel panel = new JPanel();
+       getContentPane().add(panel);
+
+       String  defaultPort = "/dev/ttyACM0";
+
+       panel.setLayout(null);
+
+       JButton quitButton = new JButton("Quit");
+       quitButton.setBounds(710, 530, 80, 30);
+
+       JButton startButton = new JButton("Start");
+       startButton.setBounds(10, 530, 80, 30);
+
+       JButton stopButton = new JButton("Stop");
+       stopButton.setBounds(110, 530, 80, 30);
+
+       JButton relay0Button = new JButton("Relay 0");
+       relay0Button.setBounds(100, 70, 100, 30);
+
+       final JButton readAdc = new JButton("ADC Read");
+       readAdc.setBounds(100, 10, 100, 30);
+
+
+       JLabel inLabel0 = new JLabel("Input 1");
+       inLabel0.setBounds(100, 400, 100, 30);
+       inLabel0.setFont(new Font("Serif", Font.BOLD, 20));
+       JLabel inLabel1 = new JLabel("Input 2");
+       inLabel1.setBounds(250, 400, 100, 30);
+       inLabel1.setFont(new Font("Serif", Font.BOLD, 20));
+       JLabel inLabel2 = new JLabel("Input 3");
+       inLabel2.setBounds(400, 400, 100, 30);
+       inLabel2.setFont(new Font("Serif", Font.BOLD, 20));
+       JLabel inLabel3 = new JLabel("Input 4");
+       inLabel3.setBounds(550, 400, 100, 30);
+       inLabel3.setFont(new Font("Serif", Font.BOLD, 20));
+
+       DecimalFormat volts = new DecimalFormat("#.00");
+       Locale.setDefault(Locale.US);
+       final JLabel adcLabel0 = new JLabel(volts.format(adc0/200.0) + " Volts");
+       adcLabel0.setBounds(100, 350, 120, 50);
+       adcLabel0.setFont(new Font("Serif", Font.BOLD, 18));
+       final JLabel adcLabel1 = new JLabel(volts.format(adc1/200.0) + " Volts");
+       adcLabel1.setBounds(250, 350, 120, 50);
+       adcLabel1.setFont(new Font("Serif", Font.BOLD, 18));
+       final JLabel adcLabel2 = new JLabel(volts.format(adc2/200.0) + " Volts");
+       adcLabel2.setBounds(400, 350, 120, 50);
+       adcLabel2.setFont(new Font("Serif", Font.BOLD, 18));
+       final JLabel adcLabel3 = new JLabel(volts.format(adc3/200.0) + " Volts");;
+       adcLabel3.setBounds(550, 350, 120, 50);
+       adcLabel3.setFont(new Font("Serif", Font.BOLD, 18));
+
+
+       final JLabel adcLabelI0 = new JLabel(P00);
+       adcLabelI0.setBounds(100, 50, 120, 320);
+	adcLabelI0.setIcon(P00);
+       final JLabel adcLabelI1 = new JLabel(P00);
+       adcLabelI1.setBounds(250, 50, 120, 320);
+	adcLabelI1.setIcon(P00);
+       final JLabel adcLabelI2 = new JLabel(P00);
+       adcLabelI2.setBounds(400, 50, 120, 320);
+	adcLabelI2.setIcon(P00);
+       final JLabel adcLabelI3 = new JLabel(P00);
+       adcLabelI3.setBounds(550, 50, 120, 320);
+	adcLabelI3.setIcon(P00);
+       
+       
+       quitButton.addActionListener(new ActionListener() {
+           @Override
+           public void actionPerformed(ActionEvent event) {
+               System.exit(0);
+          }
+       });
+       
+       startButton.addActionListener(new ActionListener() {
+           @Override
+           public void actionPerformed(ActionEvent event) {
+               DAMMIT.relay0ToggleOn(relay0on);
+		stopFlag = false;
+	       if (!relay0on) {relay0on = true;}
+          }
+       });
+       
+       stopButton.addActionListener(new ActionListener() {
+           @Override
+           public void actionPerformed(ActionEvent event) {
+               	DAMMIT.relay0ToggleOff(relay0on);
+		stopFlag = true;
+		if (relay0on) {relay0on = false;}
+          }
+       });
+       
+       readAdc.addActionListener(new ActionListener() {
+           @Override
+           public void actionPerformed(ActionEvent event) {
+		//adc0 = DAMMIT.readFromAdc (0);
+		//adc1 = DAMMIT.readFromAdc (1);
+		//adc2 = DAMMIT.readFromAdc (2);
+		//adc3 = DAMMIT.readFromAdc (3);
+		DecimalFormat volts = new DecimalFormat("0.00");
+       		Locale.setDefault(Locale.US);
+		adcLabel0.setText(volts.format(adc0/200.0) + " Volts");
+		adcLabel1.setText(volts.format(adc1/200.0) + " Volts");
+		adcLabel2.setText(volts.format(adc2/200.0) + " Volts");
+		adcLabel3.setText(volts.format(adc3/200.0) + " Volts");
+		
+		if (adc0 <= 20) adcLabelI0.setIcon(P00); 
+		else if (adc0 > 20 && adc0 <= 75) adcLabelI0.setIcon(P05); 
+		else if (adc0 > 75 && adc0 <= 125) adcLabelI0.setIcon(P10);
+		else if (adc0 > 125 && adc0 <= 175) adcLabelI0.setIcon(P15);
+		else if (adc0 > 175 && adc0 <= 225) adcLabelI0.setIcon(P20);
+		else if (adc0 > 225 && adc0 <= 275) adcLabelI0.setIcon(P25);
+		else if (adc0 > 275 && adc0 <= 325) adcLabelI0.setIcon(P30);
+		else if (adc0 > 325 && adc0 <= 375) adcLabelI0.setIcon(P35);
+		else if (adc0 > 375 && adc0 <= 425) adcLabelI0.setIcon(P40);
+		else if (adc0 > 425 && adc0 <= 475) adcLabelI0.setIcon(P45);
+		else if (adc0 > 475 && adc0 <= 525) adcLabelI0.setIcon(P50);
+		else if (adc0 > 525 && adc0 <= 575) adcLabelI0.setIcon(P55);
+		else if (adc0 > 575 && adc0 <= 625) adcLabelI0.setIcon(P60);
+		else if (adc0 > 625 && adc0 <= 675) adcLabelI0.setIcon(P65);
+		else if (adc0 > 675 && adc0 <= 725) adcLabelI0.setIcon(P70);
+		else if (adc0 > 725 && adc0 <= 775) adcLabelI0.setIcon(P75);
+		else if (adc0 > 775 && adc0 <= 825) adcLabelI0.setIcon(P80);
+		else if (adc0 > 825 && adc0 <= 875) adcLabelI0.setIcon(P85);
+		else if (adc0 > 875 && adc0 <= 925) adcLabelI0.setIcon(P90);
+		else if (adc0 > 925 && adc0 <= 975) adcLabelI0.setIcon(P95);
+		else adcLabelI0.setIcon(P100);
+
+		
+		if (adc1 <= 20) adcLabelI1.setIcon(P00); 
+		else if (adc1 > 20 && adc1 <= 75) adcLabelI1.setIcon(P05); 
+		else if (adc1 > 75 && adc1 <= 125) adcLabelI1.setIcon(P10);
+		else if (adc1 > 125 && adc1 <= 175) adcLabelI1.setIcon(P15);
+		else if (adc1 > 175 && adc1 <= 225) adcLabelI1.setIcon(P20);
+		else if (adc1 > 225 && adc1 <= 275) adcLabelI1.setIcon(P25);
+		else if (adc1 > 275 && adc1 <= 325) adcLabelI1.setIcon(P30);
+		else if (adc1 > 325 && adc1 <= 375) adcLabelI1.setIcon(P35);
+		else if (adc1 > 375 && adc1 <= 425) adcLabelI1.setIcon(P40);
+		else if (adc1 > 425 && adc1 <= 475) adcLabelI1.setIcon(P45);
+		else if (adc1 > 475 && adc1 <= 525) adcLabelI1.setIcon(P50);
+		else if (adc1 > 525 && adc1 <= 575) adcLabelI1.setIcon(P55);
+		else if (adc1 > 575 && adc1 <= 625) adcLabelI1.setIcon(P60);
+		else if (adc1 > 625 && adc1 <= 675) adcLabelI1.setIcon(P65);
+		else if (adc1 > 675 && adc1 <= 725) adcLabelI1.setIcon(P70);
+		else if (adc1 > 725 && adc1 <= 775) adcLabelI1.setIcon(P75);
+		else if (adc1 > 775 && adc1 <= 825) adcLabelI1.setIcon(P80);
+		else if (adc1 > 825 && adc1 <= 875) adcLabelI1.setIcon(P85);
+		else if (adc1 > 875 && adc1 <= 925) adcLabelI1.setIcon(P90);
+		else if (adc1 > 925 && adc1 <= 975) adcLabelI1.setIcon(P95);
+		else adcLabelI1.setIcon(P100);
+
+		if (adc2 <= 20) adcLabelI2.setIcon(P00); 
+		else if (adc2 > 20 && adc2 <= 75) adcLabelI2.setIcon(P05); 
+		else if (adc2 > 75 && adc2 <= 125) adcLabelI2.setIcon(P10);
+		else if (adc2 > 125 && adc2 <= 175) adcLabelI2.setIcon(P15);
+		else if (adc2 > 175 && adc2 <= 225) adcLabelI2.setIcon(P20);
+		else if (adc2 > 225 && adc2 <= 275) adcLabelI2.setIcon(P25);
+		else if (adc2 > 275 && adc2 <= 325) adcLabelI2.setIcon(P30);
+		else if (adc2 > 325 && adc2 <= 375) adcLabelI2.setIcon(P35);
+		else if (adc2 > 375 && adc2 <= 425) adcLabelI2.setIcon(P40);
+		else if (adc2 > 425 && adc2 <= 475) adcLabelI2.setIcon(P45);
+		else if (adc2 > 475 && adc2 <= 525) adcLabelI2.setIcon(P50);
+		else if (adc2 > 525 && adc2 <= 575) adcLabelI2.setIcon(P55);
+		else if (adc2 > 575 && adc2 <= 625) adcLabelI2.setIcon(P60);
+		else if (adc2 > 625 && adc2 <= 675) adcLabelI2.setIcon(P65);
+		else if (adc2 > 675 && adc2 <= 725) adcLabelI2.setIcon(P70);
+		else if (adc2 > 725 && adc2 <= 775) adcLabelI2.setIcon(P75);
+		else if (adc2 > 775 && adc2 <= 825) adcLabelI2.setIcon(P80);
+		else if (adc2 > 825 && adc2 <= 875) adcLabelI2.setIcon(P85);
+		else if (adc2 > 875 && adc2 <= 925) adcLabelI2.setIcon(P90);
+		else if (adc2 > 925 && adc2 <= 975) adcLabelI2.setIcon(P95);
+		else adcLabelI2.setIcon(P100);
+
+		if (adc3 <= 20) adcLabelI3.setIcon(P00); 
+		else if (adc3 > 20 && adc3 <= 75) adcLabelI3.setIcon(P05); 
+		else if (adc3 > 75 && adc3 <= 125) adcLabelI3.setIcon(P10);
+		else if (adc3 > 125 && adc3 <= 175) adcLabelI3.setIcon(P15);
+		else if (adc3 > 175 && adc3 <= 225) adcLabelI3.setIcon(P20);
+		else if (adc3 > 225 && adc3 <= 275) adcLabelI3.setIcon(P25);
+		else if (adc3 > 275 && adc3 <= 325) adcLabelI3.setIcon(P30);
+		else if (adc3 > 325 && adc3 <= 375) adcLabelI3.setIcon(P35);
+		else if (adc3 > 375 && adc3 <= 425) adcLabelI3.setIcon(P40);
+		else if (adc3 > 425 && adc3 <= 475) adcLabelI3.setIcon(P45);
+		else if (adc3 > 475 && adc3 <= 525) adcLabelI3.setIcon(P50);
+		else if (adc3 > 525 && adc3 <= 575) adcLabelI3.setIcon(P55);
+		else if (adc3 > 575 && adc3 <= 625) adcLabelI3.setIcon(P60);
+		else if (adc3 > 625 && adc3 <= 675) adcLabelI3.setIcon(P65);
+		else if (adc3 > 675 && adc3 <= 725) adcLabelI3.setIcon(P70);
+		else if (adc3 > 725 && adc3 <= 775) adcLabelI3.setIcon(P75);
+		else if (adc3 > 775 && adc3 <= 825) adcLabelI3.setIcon(P80);
+		else if (adc3 > 825 && adc3 <= 875) adcLabelI3.setIcon(P85);
+		else if (adc3 > 875 && adc3 <= 925) adcLabelI3.setIcon(P90);
+		else if (adc3 > 925 && adc3 <= 975) adcLabelI3.setIcon(P95);
+		else adcLabelI3.setIcon(P100);
+          }
+       });
+       
+       relay0Button.addActionListener(new ActionListener() {
+           @Override
+           public void actionPerformed(ActionEvent event) {
+		if (relay0on) 
+		{
+		    DAMMIT.relay0ToggleOff(relay0on);
+		    relay0on = false;
+		}
+		else 
+		{
+		    DAMMIT.relay0ToggleOn(relay0on);
+		    relay0on = true;
+		}
+          }
+       });
+
+	SwingWorker<Integer, Integer> adc = new SwingWorker<Integer, Integer>(){
+	    @Override
+	    public Integer doInBackground(){
+		while (!quitFlag){
+		    try{
+		        Thread.sleep(200);
+		    }catch (InterruptedException e) {
+		    System.out.println("Timer failed: ");
+		    System.out.println(e.getMessage());
+		}
+		    if (!stopFlag){
+			adc0 = DAMMIT.readFromAdc(0);
+			adc1 = DAMMIT.readFromAdc(1);
+			adc2 = DAMMIT.readFromAdc(2);
+			adc3 = DAMMIT.readFromAdc(3);
+			readAdc.doClick();
+		    }
+		}
+		return 0;
+	    }
+
+	    @Override
+	    public void done(){	 
+		    adc0 = 0;
+		    adc1 = 0;
+		    adc2 = 0;
+		    adc3 = 0;  
+	    } 
+
+	};
+	
+	adc.execute();
+
+
+       panel.add(quitButton);
+       panel.add(startButton);
+       panel.add(stopButton);
+       //panel.add(readAdc);
+       //panel.add(relay0Button);
+       panel.add(inLabel0);
+       panel.add(inLabel1);
+       panel.add(inLabel2);
+       panel.add(inLabel3);
+       panel.add(adcLabel0);
+       panel.add(adcLabel1);
+       panel.add(adcLabel2);
+       panel.add(adcLabel3);
+       panel.add(adcLabelI0);
+       panel.add(adcLabelI1);
+       panel.add(adcLabelI2);
+       panel.add(adcLabelI3);
+       
+
+       setTitle("DAMMIT");
+       setSize(800, 600);
+       setLocationRelativeTo(null);
+       setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+	//ADCUpdater adc = new ADCUpdater();
+	//adc.execute();
+    }
+
+}

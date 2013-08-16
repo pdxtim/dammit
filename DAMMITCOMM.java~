@@ -36,8 +36,11 @@ public class DAMMITCOMM {
     public String port;
     public boolean portOpen;
 
+    //DAMMITCOMM(){
+    //};
 
     public void startDammit(String Port) throws InterruptedException {
+	//sph = Sph;
 	port = Port;
 	try{
 	    DAMMIT.sph.connect(port);
@@ -46,13 +49,29 @@ public class DAMMITCOMM {
 	    System.out.println("Port opening failed: ");
 	    System.out.println(e.getMessage());
 	}
+	/*	if (portOpen){
+		try{
+		    //DAMMIT.sph.writeSerial("relay on 0\n\r");
+		    //Thread.sleep(2000);
+		    //DAMMIT.sph.writeSerial("relay off 0\n\r");
+		    //DAMMIT.sph.disconnect();
+		} catch (IOException e) {
+		    System.out.println("Port operations failed: ");
+		    System.out.println(e.getMessage());
+		}
+	}*/
+
+	
     }
 
 	public void toggleRelay0on (boolean relay0on) {
-		System.out.println(relay0on);        
-		try{       
+		System.out.println(relay0on);
+		//sph.connect(port);                
+		try{
+		//sph.connect(port);        
 		System.out.println("Relay 0 turning on? ");
 		DAMMIT.sph.writeSerial("relay on 0\n\r");
+		//dammit.relay1on = true;
 		} catch (IOException e) {
 		    System.out.println("Relay 0 operation failed: ");
 		    System.out.println(e.getMessage());
@@ -61,9 +80,11 @@ public class DAMMITCOMM {
 
 	public void toggleRelay0off (boolean relay0on) {
 		System.out.println(relay0on);
-		try{        
+		try{
+		//sph.connect(port);        
 		System.out.println("Relay 0 turning off? ");
 		DAMMIT.sph.writeSerial("relay off 0\n\r");
+		//dammit.relay1on = false;
 		} catch (IOException e) {
 		    System.out.println("Relay 0 operation failed: ");
 		    System.out.println(e.getMessage());
@@ -72,8 +93,8 @@ public class DAMMITCOMM {
 
 	public void disconnect () {
 		try{
-		System.out.println("Disconnect from DC ");
 		DAMMIT.sph.disconnect();
+		System.out.println("Disconnect from DC ");
 		} catch (IOException e) {
 		    System.out.println("Disconnect operation failed: ");
 		    System.out.println(e.getMessage());
@@ -81,6 +102,7 @@ public class DAMMITCOMM {
 	}
 
 	public int adcRead (int channel) {
+		//System.out.println(relay0on);
 		int input = 0;
 		String callString;
 
@@ -95,12 +117,20 @@ public class DAMMITCOMM {
 			    break;
 		}
 		try{
+		//sph.connect(port);        
+		//System.out.println(callString);
+		//Thread.sleep(1);
 		DAMMIT.sph.writeSerial(callString);
 		while (!DAMMIT.sph.checkForData()){
 		    Thread.sleep(100);
 		}
 		input = DAMMIT.sph.getData();
+		//System.out.println("asked and got data - " + input);
 		return input;
+		//System.out.println("Sent read request! ");
+		//input = DAMMIT.sph.readSerial();
+		//System.out.println(input);
+		//dammit.relay1on = false;
 		} catch (IOException e) {
 		    System.out.println("Relay 0 operation failed: ");
 		    System.out.println(e.getMessage());

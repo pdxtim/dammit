@@ -57,7 +57,7 @@ public class DAMMIT {
     public static void main(String[] args) throws InterruptedException {
 	sph = new SerialPortHandler();
 
-	String port = "/dev/ttyS80";// "/dev/ttyACM0";
+	String port = "/dev/ttyACM0";// "/dev/ttyS80";
 
 	DC = new DAMMITCOMM();
 	DC.startDammit(port);

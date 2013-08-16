@@ -134,6 +134,7 @@ public class SerialPortHandler {
         
         public void serialEvent(SerialPortEvent arg0) {
             int data;
+	    //String theData;
           
             try
             {
@@ -151,6 +152,7 @@ public class SerialPortHandler {
             catch ( IOException e )
             {
                 e.printStackTrace();
+                //System.exit(-1);
             }             
         }
 
@@ -173,11 +175,10 @@ public class SerialPortHandler {
 
     public void disconnect() throws IOException {
         try {
-            outStream.flush();
             outStream.close();
             inStream.close();
-            serialPort.removeEventListener();
-            //serialPort.close();
+            serialPort.close();
+	    System.out.println("Port Closed");
         } catch (IOException e) {
 	    System.out.println("Exception - Closing port ");
             serialPort.close();
@@ -191,6 +192,10 @@ public class SerialPortHandler {
         return s.hasNext() ? s.next() : "";
     }
 
+    //public static String convertStreamToStringOut(java.io.OutputStream is) {
+    //    java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
+    //    return s.hasNext() ? s.next() : "";
+    //}
 }
 
 

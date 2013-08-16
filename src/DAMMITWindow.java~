@@ -103,7 +103,7 @@ public class DAMMITWindow extends JFrame {
 	JPanel panel = new JPanel();
        getContentPane().add(panel);
 
-       String  defaultPort = "/dev/ttyS80";// "/dev/ttyACM0";
+       String  defaultPort = "/dev/ttyACM0";// "/dev/ttyS80";
 
        panel.setLayout(null);
 

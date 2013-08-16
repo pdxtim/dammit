@@ -49,15 +49,11 @@ public class DAMMIT {
 	return DC.adcRead (channel);
     }
 
-    public static void disconnect(){
-	DC.disconnect ();
-    }
-
  
     public static void main(String[] args) throws InterruptedException {
 	sph = new SerialPortHandler();
 
-	String port = "/dev/ttyS80";// "/dev/ttyACM0";
+	String port = "/dev/ttyACM0";
 
 	DC = new DAMMITCOMM();
 	DC.startDammit(port);
@@ -66,8 +62,21 @@ public class DAMMIT {
             @Override
             public void run() {
 		
+
+		//if (cnt == 30) cnt = 0;
                 dammitWin = new DAMMITWindow();
                 dammitWin.setVisible(true);
+		/** while(!dammitWin.quitFlag)
+		//{
+		    try{
+		        Thread.sleep(100);
+			cnt++;
+		        if (x == 30) DC.adc0read();
+		    } catch (InterruptedException e) {
+		        System.out.println("Port operations failed: ");
+		        System.out.println(e.getMessage());
+		    }
+		}*/
             }
         });
 

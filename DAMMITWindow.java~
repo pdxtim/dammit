@@ -75,7 +75,13 @@ public class DAMMITWindow extends JFrame {
 	cnt = 0;
     }
 
-
+    //public DAMMITWindow(SerialPortHandler Sph) {
+    //    
+	//sph = Sph;        
+	//initUI();
+	//relay0on = false;
+	//relay1on = false;
+    //}
     private void initUI() {
 
 	final ImageIcon P00 = new ImageIcon("imgs/00P.jpg"); 
@@ -103,7 +109,7 @@ public class DAMMITWindow extends JFrame {
 	JPanel panel = new JPanel();
        getContentPane().add(panel);
 
-       String  defaultPort = "/dev/ttyS80";// "/dev/ttyACM0";
+       String  defaultPort = "/dev/ttyACM0";
 
        panel.setLayout(null);
 
@@ -169,7 +175,6 @@ public class DAMMITWindow extends JFrame {
        quitButton.addActionListener(new ActionListener() {
            @Override
            public void actionPerformed(ActionEvent event) {
-	       System.out.println("Port Closed from Quit Button");
                DAMMIT.disconnect();
                System.exit(0);
           }
@@ -196,6 +201,10 @@ public class DAMMITWindow extends JFrame {
        readAdc.addActionListener(new ActionListener() {
            @Override
            public void actionPerformed(ActionEvent event) {
+		//adc0 = DAMMIT.readFromAdc (0);
+		//adc1 = DAMMIT.readFromAdc (1);
+		//adc2 = DAMMIT.readFromAdc (2);
+		//adc3 = DAMMIT.readFromAdc (3);
 		DecimalFormat volts = new DecimalFormat("0.00");
        		Locale.setDefault(Locale.US);
 		adcLabel0.setText(volts.format(adc0/200.0) + " Volts");
@@ -328,7 +337,6 @@ public class DAMMITWindow extends JFrame {
 			readAdc.doClick();
 		    }
 		}
-		done();
 		return 0;
 	    }
 
@@ -348,6 +356,8 @@ public class DAMMITWindow extends JFrame {
        panel.add(quitButton);
        panel.add(startButton);
        panel.add(stopButton);
+       //panel.add(readAdc);
+       //panel.add(relay0Button);
        panel.add(inLabel0);
        panel.add(inLabel1);
        panel.add(inLabel2);
@@ -367,7 +377,8 @@ public class DAMMITWindow extends JFrame {
        setLocationRelativeTo(null);
        setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-
+	//ADCUpdater adc = new ADCUpdater();
+	//adc.execute();
     }
 
 }
